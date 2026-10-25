@@ -1,16 +1,27 @@
 import { useState } from 'react';
 import { isFavorite, toggleFavorite } from '../utils/favorites';
+import { useMovieContext } from '../contexts/MovieContext';
 
 const IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
 const FALLBACK = 'https://placehold.co/300x450/667eea/ffffff?text=No+Poster';
 
 function MovieCard({ movie, onFavoriteChange }) {
   const [favorited, setFavorited] = useState(isFavorite(movie.id));
+  const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useMovieContext();
+  const inWatchlist = isInWatchlist(movie.id);
 
   function handleFavorite() {
     const nowFavorited = toggleFavorite(movie);
     setFavorited(nowFavorited);
     if (onFavoriteChange) onFavoriteChange();
+  }
+
+  function handleWatchlist() {
+    if (inWatchlist) {
+      removeFromWatchlist(movie.id);
+    } else {
+      addToWatchlist(movie);
+    }
   }
 
   const posterUrl = movie.poster_path ? `${IMAGE_BASE}${movie.poster_path}` : FALLBACK;
@@ -30,6 +41,9 @@ function MovieCard({ movie, onFavoriteChange }) {
         </div>
         <button className="favorite-button" onClick={handleFavorite}>
           {favorited ? '♥ Remove from Favorites' : '♡ Add to Favorites'}
+        </button>
+        <button className="watchlist-button" onClick={handleWatchlist}>
+          {inWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
         </button>
       </div>
     </div>

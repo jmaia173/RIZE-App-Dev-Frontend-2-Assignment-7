@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { MovieProvider } from './contexts/MovieContext';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
+import Watchlist from './pages/Watchlist';
 import './App.css';
 
 function App() {
@@ -11,28 +13,31 @@ function App() {
   const [searchError, setSearchError] = useState(null);
 
   return (
-    <Router>
-      <div className="app">
-        <Header
-          setSearchResults={setSearchResults}
-          setSearchLoading={setSearchLoading}
-          setSearchError={setSearchError}
-        />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                searchResults={searchResults}
-                searchLoading={searchLoading}
-                searchError={searchError}
-              />
-            }
+    <MovieProvider>
+      <Router>
+        <div className="app">
+          <Header
+            setSearchResults={setSearchResults}
+            setSearchLoading={setSearchLoading}
+            setSearchError={setSearchError}
           />
-          <Route path="/favorites" element={<Favorites />} />
-        </Routes>
-      </div>
-    </Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  searchResults={searchResults}
+                  searchLoading={searchLoading}
+                  searchError={searchError}
+                />
+              }
+            />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/watchlist" element={<Watchlist />} />
+          </Routes>
+        </div>
+      </Router>
+    </MovieProvider>
   );
 }
 
